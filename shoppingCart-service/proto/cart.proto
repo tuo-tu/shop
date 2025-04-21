@@ -1,0 +1,219 @@
+syntax = "proto3";    // 版本号
+option go_package="./;proto";     //参数1 表示生成到哪个目录 ，参数2 表示生成的文件的package
+package proto ;   //默认在哪个包
+
+//购物车信息
+message ShoppingCart {
+    int32 id = 1;
+    int32 userId = 2;
+    int32 productId = 3;
+    int32  productSkuId = 4;
+    string productName = 5;
+    string productMainPicture = 6;
+    int32 number = 7;
+    //查询修改所需
+    string updateTime = 8;
+    string crateTime = 9;
+    int32 createUser = 10;
+    int32 updateUser = 11;
+    bool isDeleted = 12;
+}
+
+//添加购物车请求 request struct
+message AddCartReq {
+    int32 number = 1;
+    int32 productId = 2;
+    int32 productSkuId = 3;
+    string productName = 4;
+    string productMainPicture = 5;
+    int32 userId = 6;
+    int32 id = 7;
+    int32 createUser = 8;
+}
+
+//添加购物车响应 resp struct
+message AddCartResp{
+    ProductDetail productSimple = 1; //产品详情
+    ProductSku productSkuSimple = 2;//产品SKU详情
+    int64 shoppingCartNumber = 3;
+    int64 canSetShoppingCartNumber = 4; //可以设置的最大数量
+    bool isBeyondMaxLimit = 5;//是否超过最大限制
+    int32 ID = 6;
+}
+
+service AddCart {
+    rpc AddCart (AddCartReq) returns (AddCartResp){}
+}
+
+//更新购物车请求
+message UpdateCartReq {
+    int32 id = 1;
+    int32 userId = 2;
+    int32 productId = 3;
+    int32  productSkuId = 4;
+    string productName = 5;
+    string productMainPicture = 6;
+    int32 number = 7;
+    //查询修改所需
+    string updateTime = 8;
+    string crateTime = 9;
+    int32 createUser = 10;
+    int32 updateUser = 11;
+    bool isDeleted = 12;
+}
+
+//更新购物车响应
+message UpdateCartResp {
+    int64 shoppingCartNumber = 3;
+    int64 canSetShoppingCartNumber = 4;
+    bool isBeyondMaxLimit = 5;
+    int32 ID = 6;
+}
+
+service UpdateCart {
+    rpc UpdateCart (UpdateCartReq) returns (UpdateCartResp){}
+}
+
+//查询购物车请求
+message FindCartReq {
+    int32 id = 1;
+    int32 userId = 2;
+    bool isDeleted = 3;
+}
+
+////查询购物车响应
+message FindCartResp {
+      ShoppingCart shoppingCart  = 1;
+}
+
+//查询购物车
+service FindCart {
+    rpc FindCart (FindCartReq) returns (FindCartResp){}
+}
+
+message Product {
+    int32 id = 1;
+    string name = 2;
+    int32 startingPrice = 3;
+    string  mainPicture = 4;
+    map<string,string> labelList = 5;
+    int32 singleBuyLimit = 6;
+    string token = 7;
+    bool isEnable = 8;
+    int32 productType = 9;
+}
+
+message PageReq {
+    int32 length = 1;
+    int32 pageIndex = 2;
+}
+
+message PageResp{
+    repeated Product product = 1;
+    int64 total = 2;
+    int64 rows = 3;
+}
+
+service Page {
+    rpc Page (PageReq) returns (PageResp){}
+}
+
+message ProductDetail {
+    int32 id = 1;
+    string name = 2;
+    int32 productType = 3;
+    int32  categoryId = 4;
+    float startingPrice = 5;
+    int32  totalStock = 6;
+    string mainPicture = 7;
+    float  remoteAreaPostage = 8;
+    int32 singleBuyLimit = 9;
+    bool    isEnable = 10;
+    string remark = 11;
+    int32   createUser = 12 ;
+    string  createTime = 13;
+    int32   updateUser = 14;
+    string updateTime = 15;
+    bool    IsDeleted = 16;
+    string detail = 17;
+    string     pictureList = 18;
+}
+
+message ProductDetailReq {
+    int32 id = 1;
+}
+
+message ProductDetailResp{
+    repeated ProductDetail productDetail = 1;
+}
+
+service ShowProductDetail {
+    rpc ShowProductDetail (ProductDetailReq) returns (ProductDetailResp){}
+}
+
+message ProductSku {
+    int32 skuId = 1;
+    string name = 2;
+    string attributeSymbolList = 3;
+    float  sellPrice = 4;
+    int32 stock = 5;
+}
+
+
+message ProductSkuReq {
+    int32 productId = 1;
+}
+
+message ProductSkuResp{
+    repeated ProductSku productSku = 1;
+}
+
+service ShowProductSku {
+    rpc ShowProductSku (ProductSkuReq) returns (ProductSkuResp){}
+}
+
+//商品库存详情 服务 接口
+service ShowDetailSku {
+    rpc ShowDetailSku (ProductDetailReq) returns (ProductSkuResp){}
+}
+
+//获取 分布式 token
+message TokenReq {
+    string uuid = 1;
+}
+
+message TokenResp{
+    string token = 1;
+    bool isLogin = 2;
+}
+
+service GetUserToken {
+    rpc GetUserToken (TokenReq) returns (TokenResp){}
+}
+
+//更新库存
+message UpdateSkuReq{
+    ProductSku productSku = 1;
+}
+
+message UpdateSkuResp {
+    bool isSuccess = 1;
+}
+
+service UpdateSku {
+    rpc UpdateSku (UpdateSkuReq) returns (UpdateSkuResp){}
+}
+
+// 计算订单价格 请求
+message OrderTotalReq {
+    repeated int32 cartIds = 1;
+}
+//计算订单价格 响应
+message OrderTotalResp{
+    float totalPrice = 1;
+}
+
+//计算订单价格 服务 接口
+service GetOrderTotal {
+    rpc GetOrderTotal (OrderTotalReq) returns (OrderTotalResp){}
+}

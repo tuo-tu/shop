@@ -1,0 +1,70 @@
+syntax = "proto3";
+//参数1 表示生成到哪个目录 ，参数2 表示生成的文件的package
+option go_package="./;proto";
+package proto;
+
+//交易订单信息，字段大小写方式与json一致
+message TradeOrder {
+  string serverTime = 1;//服务器时间戳？
+  string expireTime = 2;//过期时间
+  float totalAmount = 3;//总金额
+  float  productAmount = 4;//产品金额
+  float shippingAmount = 5;//运费金额
+  float discountAmount = 6;//折扣金额
+  float payAmount = 7;  //支付金额，resp返回需要
+  //新增和修改需要
+  int32  id = 8;//订单ID
+  bool  isDeleted = 9;//是否已删除
+  int32  orderStatus = 10;//订单状态
+  string  orderNo = 11;//订单号
+  int32   userId   = 12 ;//用户ID
+  int32   createUser   = 13;//创建者
+  int32   updateUser   = 14;//更新者
+  string cancelReason  = 15;//取消原因
+  string createTime  = 16;//创建时间
+  string submitTime  = 17;//提交时间
+}
+
+//查询订单详情req
+message FindOrderReq {
+  string id = 1;
+  string orderNo = 2;
+}
+//查询订单详情resp
+message FindOrderResp {
+  TradeOrder tradeOrder  = 1;
+}
+//查询订单详情 服务接口
+service FindOrder {
+  rpc FindOrder (FindOrderReq) returns (FindOrderResp){}
+}
+
+//新增订单req
+message AddTradeOrderReq {
+  repeated int32 cartIds = 1;//购物车ID列表
+  bool isVirtual = 2;//是否是虚拟交易
+  int32 recipientAddressId = 3;//收件人地址
+  TradeOrder tradeOrder = 4; //交易订单信息
+}
+//新增订单resp
+message AddTradeOrderResp{
+  TradeOrder tradeOrder = 1;
+  repeated ProductOrder products =2;//返回很多产品
+}
+//商品订单
+message ProductOrder {
+  int32  productId = 1;//商品ID
+  int32  productSkuId = 2;//商品库存ID
+  string  productName = 3;//商品名称
+  string  productImageUrl = 4;//商品图片URL
+  string   skuDescribe = 5;//库存描述
+  int32   quantity = 6;//订单中的产品数量
+  float   productPrice = 7;//商品价格
+  float realPrice = 8;//真实价格
+  float realAmount = 9;//真实金额
+}
+
+//更新订单 服务接口
+service UpdateTradeOrder {
+  rpc UpdateTradeOrder (AddTradeOrderReq) returns (AddTradeOrderResp){}
+}

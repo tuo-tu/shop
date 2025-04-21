@@ -1,0 +1,279 @@
+syntax = "proto3";
+option go_package="./;proto";     //参数1 表示生成到哪个目录 ，参数2 表示生成的文件的package
+package proto ;
+
+//交易订单信息，字段大小写方式与json一致
+message TradeOrder {
+    string serverTime = 1;//服务器时间戳？
+    string expireTime = 2;//过期时间
+    float totalAmount = 3;//总金额
+    float  productAmount = 4;//产品金额
+    float shippingAmount = 5;//运费金额
+    float discountAmount = 6;//折扣金额
+    float payAmount = 7;  //支付金额，resp返回需要
+    //新增和修改需要
+    int32  id = 8;//订单ID
+    bool  isDeleted = 9;//是否已删除
+    int32  orderStatus = 10;//订单状态
+    string  orderNo = 11;//订单号
+    int32   userId   = 12 ;//用户ID
+    int32   createUser   = 13;//创建者
+    int32   updateUser   = 14;//更新者
+    string cancelReason  = 15;//取消原因
+    string createTime  = 16;//创建时间
+    string submitTime  = 17;//提交时间
+}
+
+//新增订单request
+message AddTradeOrderReq {
+    repeated int32 cartIds = 1;//购物车ID列表
+    bool isVirtual = 2;//是否是虚拟交易
+    int32 recipientAddressId = 3;//收件人地址
+    TradeOrder tradeOrder = 4; //交易订单信息
+}
+
+//新增订单resp
+message AddTradeOrderResp{
+    TradeOrder tradeOrder = 1;
+    repeated ProductOrder products =2;//返回很多产品
+}
+
+//订单商品
+message ProductOrder {
+    int32  productId = 1;//商品ID
+    int32  productSkuId = 2;//商品库存ID
+    string  productName = 3;//商品名称
+    string  productImageUrl = 4;//商品图片URL
+    string   skuDescribe = 5;//库存描述
+    int32   quantity = 6;//订单中的产品数量
+    float   productPrice = 7;//商品价格
+    float realPrice = 8;//真实价格
+    float realAmount = 9;//真实金额
+}
+
+//添加订单 服务接口
+service AddTradeOrder {
+    rpc AddTradeOrder (AddTradeOrderReq) returns (AddTradeOrderResp){}
+}
+
+//更新订单 服务接口
+service UpdateTradeOrder {
+    rpc UpdateTradeOrder (AddTradeOrderReq) returns (AddTradeOrderResp){}
+}
+
+//购物车结构体
+message ShoppingCart {
+    int32 id = 1;
+    int32 userId = 2;
+    int32 productId =3;
+    int32  productSkuId = 4;
+    string productName = 5;
+    string productMainPicture = 6;
+    int32 number = 7;
+    //查询修改所需
+    string updateTime =8;
+    string crateTime = 9;
+    int32 createUser = 10;
+    int32 updateUser = 11;
+    bool isDeleted = 12;
+}
+
+message UpdateCartReq {
+    int32 number = 1;
+    int32 productId = 2;
+    int32 productSkuId =3;
+    string productName = 4;
+    string productMainPicture = 5;
+    int32 userId =6;
+    int32 id = 7;
+    string updateTime =8;
+    string crateTime = 9;
+    int32 createUser = 10;
+    int32 updateUser = 11;
+    bool isDeleted = 12;
+}
+
+message UpdateCartResp {
+    int64 shoppingCartNumber = 3;//购物车中的商品数量
+    int64 canSetShoppingCartNumber = 4;//可设置的最大数量
+    bool isBeyondMaxLimit = 5; //是否超过最大限制
+    int32 ID = 6;//购物车ID，唯一标识符
+}
+
+//更新购物车 服务接口
+service UpdateCart {
+    rpc UpdateCart (UpdateCartReq) returns (UpdateCartResp){}
+}
+
+message FindCartReq {
+    int32 id = 1;
+    int32 userId = 2;
+    bool isDeleted = 3;
+}
+
+message FindCartResp {
+      ShoppingCart shoppingCart  = 1;
+}
+
+//查询购物车 服务接口
+service FindCart {
+    rpc FindCart (FindCartReq) returns (FindCartResp){}
+}
+
+message Product {
+    int32 id = 1;
+    string name = 2;
+    int32 startingPrice =3;
+    string  mainPicture = 4;
+    map<string,string> labelList = 5; //产品标签列表
+    int32 singleBuyLimit = 6;
+    string token = 7;
+    bool isEnable = 8;
+    int32 productType = 9;
+}
+
+//商品分页查询request
+message PageReq {
+    int32 length = 1; //一页数据的长度
+    int32 pageIndex = 2;//页索引
+}
+
+//商品分页查询resp
+message PageResp{
+    repeated Product product = 1;
+    int64 total =2;
+    int64 rows = 3;
+}
+
+//分页查询 服务接口
+service Page {
+    rpc Page (PageReq) returns (PageResp){}
+}
+
+//商品详情
+message ProductDetail {
+    int32 id = 1;
+    string name = 2;
+    int32 productType = 3;
+    int32  categoryId = 4; //分类id
+    float startingPrice = 5;
+    int32  totalStock = 6;
+    string mainPicture = 7;
+    float  remoteAreaPostage = 8; //远程地区邮费
+    int32 singleBuyLimit = 9;
+    bool    isEnable = 10; //是否可用
+    string remark = 11; //备注
+    int32   createUser = 12;
+    string  createTime = 13;
+    int32   updateUser = 14;
+    string updateTime = 15;
+    bool    IsDeleted = 16;
+    string detail = 17; //详情
+    string  pictureList = 18;//图片列表
+}
+
+//商品详情request
+message ProductDetailReq {
+    int32 id = 1;
+}
+
+//商品详情resp
+message ProductDetailResp{
+    repeated ProductDetail productDetail = 1;
+}
+
+//展示商品详情 服务接口
+service ShowProductDetail {
+    rpc ShowProductDetail (ProductDetailReq) returns (ProductDetailResp){}
+}
+
+//商品库存
+message ProductSku {
+    int32 skuId = 1;
+    string name = 2;
+    string attributeSymbolList =3;
+    float  sellPrice = 4;
+    int32 stock =5;
+}
+
+//商品库存request
+message ProductSkuReq {
+    int32 productId = 1;
+}
+
+//商品库存resp
+message ProductSkuResp{
+    repeated ProductSku productSku = 1;
+}
+
+//展示商品库存 服务接口
+service ShowProductSku {
+    rpc ShowProductSku (ProductSkuReq) returns (ProductSkuResp){}
+}
+
+//展示商品库存详情 服务接口
+service ShowDetailSku {
+    rpc ShowDetailSku (ProductDetailReq) returns (ProductSkuResp){}
+}
+
+//分布式token request
+message TokenReq {
+    string uuid = 1;
+}
+
+//分布式token resp
+message TokenResp{
+    string token = 1;
+    bool isLogin=2;
+}
+//获取分布式token 服务接口
+service GetUserToken {
+    rpc GetUserToken (TokenReq) returns (TokenResp){}
+}
+
+//更新库存request
+message UpdateSkuReq{
+    ProductSku productSku = 1;
+}
+
+//更新库存resp
+message UpdateSkuResp {
+    bool isSuccess =1;
+}
+
+//更新库存 服务接口
+service UpdateSku {
+    rpc UpdateSku (UpdateSkuReq) returns (UpdateSkuResp){}
+}
+
+//订单总价request
+message OrderTotalReq {
+    repeated int32 cartIds = 1; //需要计算总价的项目
+}
+
+//订单总价resp
+message OrderTotalResp{
+    float totalPrice = 1;
+}
+
+//获取订单总价 服务接口
+service GetOrderTotal {
+    rpc GetOrderTotal (OrderTotalReq) returns (OrderTotalResp){}
+}
+
+//查询订单request
+message FindOrderReq {
+    string id = 1;
+    string orderNo = 2;
+}
+
+//查询订单resp
+message FindOrderResp {
+    TradeOrder tradeOrder  = 1;
+}
+
+//查询订单 服务接口
+service FindOrder {
+    rpc FindOrder (FindOrderReq) returns (FindOrderResp){}
+}
+

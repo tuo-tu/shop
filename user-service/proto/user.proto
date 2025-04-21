@@ -1,0 +1,52 @@
+syntax = "proto3"; // 版本号
+//参数1 表示生成到哪个目录 ，参数2 表示生成的文件的package
+option go_package="./;proto";
+package proto ; //默认在哪个包，当前文件的包名
+//message结构体
+message User {
+  string avatar = 1; // 头像
+  int32 clientId = 2;// 客户端ID
+  int32 employeeId =3;// 员工ID
+  string nickname = 4;// 昵称
+  string phone = 5;// 手机号
+  string sessionId = 6;// 会话ID
+  string token = 7;// 令牌
+  string tokenExpireTime = 8;// 令牌过期时间
+  string unionId = 9;// 联盟ID
+  int32 id = 10;
+}
+
+//请求 request struct
+message LoginRequest {
+  int32 clientId = 1;
+  string phone = 2;
+  int32 systemId = 3; //系统ID
+  string verificationCode = 4; //验证码
+}
+
+//响应 resp struct
+message LoginResp{
+  string token = 1;
+  User user = 2;
+}
+
+//RPC 登陆服务 接口
+service Login {
+  //rpc 登陆服务具体方法
+  rpc Login (LoginRequest) returns (LoginResp){}
+}
+
+//获取分布式token
+message TokenReq {
+  string uuid = 1;
+}
+
+//响应resp struct
+message TokenResp {
+  string token = 1;
+  bool isLogin = 2;
+}
+
+service GetUserToken {
+  rpc GetUserToken (TokenReq) returns (TokenResp){}
+}

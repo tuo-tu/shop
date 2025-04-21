@@ -1,0 +1,123 @@
+syntax = "proto3";    // 版本号
+////参数1 表示生成到哪个目录 ，参数2 表示生成的文件的package
+//这里表示生成的Go语言代码位于当前目录下的proto包中
+option go_package="./;proto";
+package proto ;   //当前文件的包名
+
+message Product {
+    int32 id = 1;
+    string name = 2;
+    int32 startingPrice =3; //初始价格
+    string  mainPicture = 4; //存储产品的主图片URL
+    map<string,string> labelList = 5; //产品标签
+    int32 singleBuyLimit = 6; //单次购买限制
+    string token = 7;
+    bool isEnable = 8; //产品是否可用
+    int32 productType = 9;
+}
+
+//请求 request struct
+message PageReq { 
+    int32 length = 1;//每页返回的数据量长度
+    int32 pageIndex = 2; //要查询的页码
+}
+
+//响应
+message PageResp{
+    //repeated表示可重复，可理解为数组、切片
+    repeated Product product = 1; 
+    int64 total =2; //产品总数
+    int64 rows = 3; //当前页面的产品数量？对
+}
+
+//RPC 服务 接口
+service Page {
+    //rpc 服务
+    rpc Page (PageReq) returns (PageResp){}
+}
+
+//商品详细信息
+message ProductDetail {
+    int32 id = 1;//商品ID
+    string name = 2;//商品名称
+    int32 productType = 3;//商品类型
+    int32  categoryId = 4;//商品分类ID
+    float startingPrice = 5;//商品起始价格
+    int32  totalStock = 6;//商品库存数量
+    string mainPicture = 7;//商品主图URL
+    float  remoteAreaPostage = 8;//远程地区邮费
+    int32 singleBuyLimit = 9;//单次购买限制
+    bool    isEnable = 10;//商品是否可用
+    string remark = 11;//商品备注
+    int32   createUser = 12 ;//商品创建者用户ID
+    string  createTime = 13;//商品创建时间
+    int32   updateUser = 14;//商品更新者用户ID
+    string updateTime = 15;//商品更新时间
+    bool    IsDeleted = 16;//商品是否被删除
+    string detail = 17;//商品详细信息
+    string     pictureList = 18;//商品图片列表
+}
+
+//ProductDetail请求
+message ProductDetailReq {
+    int32 id = 1;
+}
+
+//ProductDetail响应
+message ProductDetailResp{
+    repeated ProductDetail productDetail = 1;
+}
+
+//ProductDetail RPC 服务 接口
+service ShowProductDetail {
+    //rpc 服务
+    rpc ShowProductDetail (ProductDetailReq) returns (ProductDetailResp){}
+}
+
+//产品库存
+message ProductSku {
+    int32 skuId = 1; //库存id是否等于商品id？答案是不等于
+    string name = 2;
+    string attributeSymbolList = 3;//商品的属性符号列表
+    float  sellPrice = 4; //售价
+    int32 stock = 5; //库存数量
+}
+
+//产品库存 request struct
+message ProductSkuReq {
+    int32 productId = 1;
+}
+
+//产品库存 resp struct
+message ProductSkuResp{
+    repeated ProductSku productSku = 1;
+}
+
+//产品库存 RPC 服务 接口
+service ShowProductSku {
+    //rpc 服务
+    rpc ShowProductSku (ProductSkuReq) returns (ProductSkuResp){}
+}
+
+//商品库存详情 服务 接口
+service ShowDetailSku {
+    //rpc 服务
+    rpc ShowDetailSku (ProductDetailReq) returns (ProductSkuResp){}
+}
+
+//产品库存更新message请求
+message UpdateSkuReq{
+    ProductSku productSku = 1;
+}
+
+//产品库存更新message响应
+message UpdateSkuResp {
+    bool isSuccess = 1;
+}
+
+//更新库存
+service UpdateSku {
+    rpc UpdateSku (UpdateSkuReq) returns (UpdateSkuResp){}
+}
+
+
