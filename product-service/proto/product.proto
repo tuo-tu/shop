@@ -65,7 +65,7 @@ message ProductDetailReq {
 
 //ProductDetail响应
 message ProductDetailResp{
-    repeated ProductDetail productDetail = 1;
+     ProductDetail productDetail = 1;
 }
 
 //ProductDetail RPC 服务 接口

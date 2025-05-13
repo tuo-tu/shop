@@ -21,6 +21,10 @@ type Product struct {
 	IsDeleted         bool       `json:"isDeleted"`                      //是否删除
 }
 
+func (table *Product) TableName() string {
+	return "product"
+}
+
 type ProductDetail struct {
 	ID                int32      `json:"id"`
 	Name              string     `json:"name"`
@@ -40,8 +44,4 @@ type ProductDetail struct {
 	IsDeleted         bool       `json:"isDeleted"`
 	Detail            string     `gorm:"detail" json:"detail"`            //商品详情页面
 	PictureList       string     `gorm:"picture_list" json:"pictureList"` //商品详情需要的图片
-}
-
-func (table *Product) TableName() string {
-	return "product"
 }

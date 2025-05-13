@@ -34,7 +34,7 @@ func NewTradeRepository(db *gorm.DB) ITradeRepository {
 // 新增订单，req和proto交互，返回值obj和结构体交互（进一步为数据库）
 func (u *TradeRepository) AddTradeOrder(req *proto.AddTradeOrderReq) (obj *model.TraderOrder, err error) {
 	trade := &model.TraderOrder{}
-	//将req转换成指定的（注意传入的是指定数据类型）target类型数据
+	//将*proto.TradeOrder类型数据转换成*model.TraderOrder类型
 	err = common.SwapToStruct(req.TradeOrder, trade)
 	if err != nil {
 		log.Println("SwapToStruct  err :", err)

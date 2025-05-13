@@ -14,6 +14,7 @@ type IProductDataService interface {
 	UpdateSku(req *proto.UpdateSkuReq) (isSuccess bool, err error)
 	CountNum() int64
 }
+
 type ProductDataService struct {
 	productRepository repository.IProductRepository
 }
@@ -35,8 +36,8 @@ func (u *ProductDataService) ShowProductDetail(id int32) (product *model.Product
 	return u.productRepository.ShowProductDetail(id)
 }
 
-func (u *ProductDataService) ShowProductSku(id int32) (product *[]model.ProductSku, err error) {
-	return u.productRepository.ShowProductSku(id)
+func (u *ProductDataService) ShowProductSku(productid int32) (product *[]model.ProductSku, err error) {
+	return u.productRepository.ShowProductSku(productid)
 }
 
 func (u *ProductDataService) ShowDetailSku(id int32) (product *model.ProductSku, err error) {

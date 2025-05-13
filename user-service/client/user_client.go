@@ -73,6 +73,7 @@ func main() {
 		}
 		common.RespOK(c.Writer, resp, "登陆成功")
 	})
+
 	service := web.NewService(
 		web.Address(":6666"),
 		//自定义处理器

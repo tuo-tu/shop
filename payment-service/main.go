@@ -22,8 +22,6 @@ import (
 
 // 将公钥提供给支付宝（通过支付宝后台上传）对我们请求的数据进行签名验证，我们的代码中将使用私钥对请求数据签名。
 // 目前新创建的支付宝应用只支持证书方式认证，已经弃用之前的公钥和私钥的方式
-// 私钥:用于加密请求参数；
-// 公钥:用于解密通过 私钥加密后的 请求参数。
 var (
 	// 支付宝分配给商户的应用ID,用于标识商户
 	APPID = "9021000137601247"
@@ -32,7 +30,8 @@ var (
 	//支付宝公钥
 	AliPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhF9CdR/I8DUI5lYhimbc1Iu1NYbVL31c5rN3bEcc3sB27GAw46/e0nWLzUTsdk5oL+03/WoB+x/ECnfgkf5czGDCl0J6Pzq1GUBmanbBprRHWzqss3wCK5U/J6KkcMqCqji0mqaereaex8LvrSeI4nezzbKCyxdSMBh/TZhl1sU/4gf9F+fydh5+5WhS+/7dyvnxBSABeW9GLIwS7f2qpoE4VtN0/tuuPUb776vcrlIoXOl40zPwNLgHa3V2i0UinZ2dAZ0DSKr/bLx1bQEjtnOCzX5TgW4z+xELfaOsZdoi34DCCZw1zkhPh98CnSMDc7e7LGK26lz+ZEtCRFuHbQIDAQAB"
 	//商户应用的私钥
-	PrivateKey         = "MIIEpAIBAAKCAQEAnSWB1PohqjIIpVAAPlsQZGTm1yMXhTQzo/U5mPqsH6oWCwcR1OgDcvQmJGGSOV4K9P6y/B13YK/laR7SCDc9NxY7NNLrvlTnPHGp2C1/GJyc+7gWrT2pj/CI52h3mWyUTn0YKw+1fipvxBaDN/ikwUDFN5s7KU2CVjdzpCsppRVwLoIQoT/vcIYfIH/Wq6acc3FUT1kzcL3T9g0fkoBcCAVZxjnm3NwWFkgXBq214Crme8OQT+nxxK9b5pvcwmuAiu01ZseZXczKK8pXhNSHP74Q5nXBYe/OeATOoIpcL8yqDzdB6jEnc9uBDybpOOFE3XiG3KWe/FSq6Gva4MluTwIDAQABAoIBAAwwK4i0OcY0iT0hHlO3xmay+MB45UsciGDQFT6LOqxeCcWjL7vent3cl9S8iJXQeHMWChXJx0eFfPqRPGMMvb+3BrKLJWOmvCSRAEZXCQOEqhxP49pd7PfQBR5FmPkaVcpco3I7jq0RZ4fC4zyFGWovttwgOw9yBojfViXGfz1hc5sYqfJpJu9febQicHbHjoe5w53c3emLzfpGA8Ubug/u5S73883F+5fJKBGpCxZDwXzT7ahJkZaPpJgLd2S+CcBn/PWAQmZEh4jxG+tPKV2+pjWLV3Wv66u9Kw/W2eJ1HQU8b2SvLfWkJj4WggHx66e1ux5nT01KHYgd7wcZriECgYEA8qjChBrICcJZjWtdls5IyOC9pSULPj2is4fbT62Qr1oKD3Xc98BmJm5+EN1jf0ttPV4p4iEFnL1qLNVRzc23pqTi6klnGVDAayyjuJJl3VPosS8ymIfsGzlNWg8Kl1o9wDGXGjDgsukJZnQKIc/0WayRW19fiW5zEZB9fg0Kbx8CgYEApck47IPlEZ8lHIe/qDUzQNk/Obw8I+qlgB43jSflMLNfaHA8j7xTnq6M8J1fh6bHcZXMUnWkU2kD2p92tYyg/XvJDb8vc2IQ9tH+CNdh/QbHBcGPKJktSGPK5+bFCIIBKlBh0sD9uaaQ1o1gKT6FyyC3e90LX+lfHW+61T7iitECgYAmbfmYSFGD0iaykd1Zg8PdJFKEc/Bq5AH/YrWl0bwHOUA8oJLlHbBPx9HpQ9Z9E2nyfRYu/MHRx+GnxgTVjg3Ws2hIaGWOic5fastm8LB3M9G3Nd1ScLxAt3t7lsQ7ogwDgxcGC9WaH/PgKOJt5mwxQ3YlvV34+uf4USS+sLwFSwKBgQCdOR/K7aqn8412aSbRluJsdZsIXgOK7FTYE9ALBfLNJM8udIJ6rdd/fXocFqMqOniat7111itpDwagpuolcqCaxHH/n3iYrD/6U1vfdqNvGqZURyRFFD9lj342PxxM3T3Nqz2aaXw2PEjPsHOpqamo4fYgeZj39JJHkFZXNbQSgQKBgQDhDi1YPlxJvh80l9sb9I+BIs8voGx77y6//H8N6Zx+yTq3zyVrg5NEdekntup8uD/AtVmqVn4bKy8+kEVoAPsYHRt2KTkOoQ/qsEjQUBX8ymiw1GzEi6bolPPdYaPNFmkPQ4/eFKsmTm5Y/+l0QhZh1fEsCJhyE4p7fWmUSf5GdA=="
+	PrivateKey = "MIIEpAIBAAKCAQEAnSWB1PohqjIIpVAAPlsQZGTm1yMXhTQzo/U5mPqsH6oWCwcR1OgDcvQmJGGSOV4K9P6y/B13YK/laR7SCDc9NxY7NNLrvlTnPHGp2C1/GJyc+7gWrT2pj/CI52h3mWyUTn0YKw+1fipvxBaDN/ikwUDFN5s7KU2CVjdzpCsppRVwLoIQoT/vcIYfIH/Wq6acc3FUT1kzcL3T9g0fkoBcCAVZxjnm3NwWFkgXBq214Crme8OQT+nxxK9b5pvcwmuAiu01ZseZXczKK8pXhNSHP74Q5nXBYe/OeATOoIpcL8yqDzdB6jEnc9uBDybpOOFE3XiG3KWe/FSq6Gva4MluTwIDAQABAoIBAAwwK4i0OcY0iT0hHlO3xmay+MB45UsciGDQFT6LOqxeCcWjL7vent3cl9S8iJXQeHMWChXJx0eFfPqRPGMMvb+3BrKLJWOmvCSRAEZXCQOEqhxP49pd7PfQBR5FmPkaVcpco3I7jq0RZ4fC4zyFGWovttwgOw9yBojfViXGfz1hc5sYqfJpJu9febQicHbHjoe5w53c3emLzfpGA8Ubug/u5S73883F+5fJKBGpCxZDwXzT7ahJkZaPpJgLd2S+CcBn/PWAQmZEh4jxG+tPKV2+pjWLV3Wv66u9Kw/W2eJ1HQU8b2SvLfWkJj4WggHx66e1ux5nT01KHYgd7wcZriECgYEA8qjChBrICcJZjWtdls5IyOC9pSULPj2is4fbT62Qr1oKD3Xc98BmJm5+EN1jf0ttPV4p4iEFnL1qLNVRzc23pqTi6klnGVDAayyjuJJl3VPosS8ymIfsGzlNWg8Kl1o9wDGXGjDgsukJZnQKIc/0WayRW19fiW5zEZB9fg0Kbx8CgYEApck47IPlEZ8lHIe/qDUzQNk/Obw8I+qlgB43jSflMLNfaHA8j7xTnq6M8J1fh6bHcZXMUnWkU2kD2p92tYyg/XvJDb8vc2IQ9tH+CNdh/QbHBcGPKJktSGPK5+bFCIIBKlBh0sD9uaaQ1o1gKT6FyyC3e90LX+lfHW+61T7iitECgYAmbfmYSFGD0iaykd1Zg8PdJFKEc/Bq5AH/YrWl0bwHOUA8oJLlHbBPx9HpQ9Z9E2nyfRYu/MHRx+GnxgTVjg3Ws2hIaGWOic5fastm8LB3M9G3Nd1ScLxAt3t7lsQ7ogwDgxcGC9WaH/PgKOJt5mwxQ3YlvV34+uf4USS+sLwFSwKBgQCdOR/K7aqn8412aSbRluJsdZsIXgOK7FTYE9ALBfLNJM8udIJ6rdd/fXocFqMqOniat7111itpDwagpuolcqCaxHH/n3iYrD/6U1vfdqNvGqZURyRFFD9lj342PxxM3T3Nqz2aaXw2PEjPsHOpqamo4fYgeZj39JJHkFZXNbQSgQKBgQDhDi1YPlxJvh80l9sb9I+BIs8voGx77y6//H8N6Zx+yTq3zyVrg5NEdekntup8uD/AtVmqVn4bKy8+kEVoAPsYHRt2KTkOoQ/qsEjQUBX8ymiw1GzEi6bolPPdYaPNFmkPQ4/eFKsmTm5Y/+l0QhZh1fEsCJhyE4p7fWmUSf5GdA=="
+	// 初始化支付宝客户端，false表示不启动正式环境；
 	ApliClient, _      = alipay.New(APPID, PrivateKey, false)
 	FindOrderClient    = proto.NewFindOrderService("", nil)
 	UpdateTraderClient = proto.NewUpdateTradeOrderService("", nil)
@@ -52,16 +51,6 @@ func init() {
 	)
 	FindOrderClient = proto.NewFindOrderService("trade-order", rpcServer.Client())
 	UpdateTraderClient = proto.NewUpdateTradeOrderService("trade-order", rpcServer.Client())
-}
-
-func main() {
-	r := gin.Default()
-	//设置信任的代理服务器列表
-	r.SetTrustedProxies([]string{common.QSIp})
-	r.GET("/appPay", TradeWapAliPay)
-	r.GET("/pagePay", TradePageAlipay)
-	r.POST("/return", AliPayNotify)
-	r.Run(":8086")
 }
 
 // // APP形式的支付
@@ -129,6 +118,7 @@ func TradeWapAliPay(c *gin.Context) {
 		log.Printf("不支持的操作系统: %v", runtime.GOOS)
 		return
 	}
+
 	if err := cmd.Start(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "打开支付页面失败", "details": err.Error()})
 		return
@@ -267,4 +257,14 @@ func AliPayNotify(c *gin.Context) {
 		log.Println("支付未成功")
 		c.JSON(http.StatusBadRequest, gin.H{"result": "FAIL", "message": "无效的通知数据"})
 	}
+}
+
+func main() {
+	r := gin.Default()
+	//设置信任的代理服务器列表
+	r.SetTrustedProxies([]string{common.QSIp})
+	r.GET("/appPay", TradeWapAliPay)
+	r.GET("/pagePay", TradePageAlipay)
+	r.POST("/return", AliPayNotify)
+	r.Run(":8086")
 }

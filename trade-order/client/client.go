@@ -75,10 +75,10 @@ func main() {
 		_, err := UpdateCartClient.UpdateCart(context.TODO(), req)
 		if err != nil {
 			log.Println("/updateCart err ", err)
-			c.JSON(http.StatusOK, gin.H{"dtm_reslut": "FAILURE", "Message": "删除购物车失败!"}) //删除购物车的商品吧？
+			c.JSON(http.StatusOK, gin.H{"dtm_reslut": "FAILURE", "Message": "删除购物车商品失败!"}) //删除购物车的商品吧？
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"updateCart": "SUCCESS", "Message": "删除购物车成功!"})
+		c.JSON(http.StatusOK, gin.H{"updateCart": "SUCCESS", "Message": "删除购物车商品成功!"})
 	})
 	router.POST("/updateCart-compensate", func(c *gin.Context) {
 		req := &proto.UpdateCartReq{}
@@ -89,10 +89,10 @@ func main() {
 		_, err := UpdateCartClient.UpdateCart(context.TODO(), req)
 		if err != nil {
 			log.Println("/updateCart err ", err)
-			c.JSON(http.StatusOK, gin.H{"dtm_reslut": "FAILURE", "Message": "回滚购物车失败!"})
+			c.JSON(http.StatusOK, gin.H{"dtm_reslut": "FAILURE", "Message": "回滚购物车商品失败!"})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"updateCart-compensate": "SUCCESS", "Message": "回滚购物车成功!"})
+		c.JSON(http.StatusOK, gin.H{"updateCart-compensate": "SUCCESS", "Message": "回滚购物车商品成功!"})
 	})
 
 	router.POST("/addTrade", func(c *gin.Context) {
@@ -153,11 +153,11 @@ func main() {
 		cart, err := FindCartClient.FindCart(context.TODO(), findCartReq)
 		if err != nil {
 			log.Println("FindCart  err : ", err)
-			common.RespFail(c.Writer, tokenResp, "查询购物车失败！")
+			common.RespFail(c.Writer, tokenResp, "查询购物车商品失败！")
 			return
 		}
 		if cart.ShoppingCart.IsDeleted {
-			common.RespFail(c.Writer, tokenResp, " 购物车已失效！") //的商品已失效？
+			common.RespFail(c.Writer, tokenResp, " 购物车商品已失效！") //的商品已失效？
 			return
 		}
 
@@ -192,8 +192,9 @@ func main() {
 			RecipientAddressId: int32(recipientAddressId),
 			TradeOrder:         tradeOrder,
 		}
+
 		updateCartReq := &proto.UpdateCartReq{
-			Id: cartIds[0], //只更新一个？
+			Id: cartIds[0], // 测试只更新一个
 		}
 
 		//全局事务
@@ -236,6 +237,12 @@ type clientWrapper struct {
 	client.Client
 }
 
+func NewClientHystrixWrapper() client.Wrapper {
+	return func(i client.Client) client.Client {
+		return &clientWrapper{i}
+	}
+}
+
 func (c clientWrapper) Call(ctx context.Context, req client.Request, resp interface{}, opts ...client.CallOption) error {
 	return hystrix.Do(req.Service()+"."+req.Endpoint(), func() error {
 		//正常执行，打印服务名称和端点名称
@@ -245,10 +252,4 @@ func (c clientWrapper) Call(ctx context.Context, req client.Request, resp interf
 		fmt.Println("call err :", err)
 		return err
 	})
-}
-
-func NewClientHystrixWrapper() client.Wrapper {
-	return func(i client.Client) client.Client {
-		return &clientWrapper{i}
-	}
 }

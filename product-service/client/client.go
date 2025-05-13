@@ -63,6 +63,7 @@ func main() {
 			Id: int32(id),
 		}
 		clientA := proto.NewShowProductDetailService("shop-product", rpcServer.Client())
+		// resp中实际上只有一条数据，
 		resp, err := clientA.ShowProductDetail(context.Background(), req)
 		log.Println(" /showProductDetail  :", resp)
 		if err != nil {
@@ -72,6 +73,7 @@ func main() {
 		}
 		common.RespOK(c.Writer, resp, "请求成功")
 	})
+
 	//查询商品SKU
 	router.GET("/sku", func(c *gin.Context) {
 		id, _ := strconv.Atoi(c.Request.FormValue("productId"))

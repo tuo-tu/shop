@@ -24,7 +24,7 @@ func main() {
 	}
 	//2.初始化db
 	db, _ := common.GetMysqlFromConsul(consulConfig)
-	//redis
+	// redis
 	consulRedisConfig, err := common.GetConsulConfig(common.ConsulStr, common.RedisFileKey)
 	red, _ := common.GetRedisFromConsul(consulRedisConfig)
 

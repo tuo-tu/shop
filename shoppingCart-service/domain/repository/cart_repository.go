@@ -62,7 +62,7 @@ func (u *CartRepository) UpdateCart(req *proto.UpdateCartReq) (obj *model.Shoppi
 	return &cart, tb.Error
 }
 
-// 汇总int32List订单价格，每一条数据表示某个购物车中的一条商品的数据；
+// 汇总int32List订单价格，每一条数据表示购物车中的一条商品的数据；
 func (u *CartRepository) GetOrderTotal(int32List []int32) (obj float32, err error) {
 	sql := "select sum(c.Number*s.sell_price) from shopping_cart c\n" +
 		"left join product_sku s on c.product_sku_id = s.id\n" +

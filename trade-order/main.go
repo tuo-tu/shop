@@ -20,15 +20,23 @@ import (
 func main() {
 	//0.consul配置中心
 	//链路追踪实列化（服务端），注意addr是 jaeper地址 端口号6831（固定的）
-	t, io, err := common.NewTracer("trade-order", common.ConsulIp+":6831")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer io.Close()
-	//设置全局的Tracing
-	opentracing.SetGlobalTracer(t)
-	//开始监控prometheus 默认暴露9092
+
+	//开始监控prometheus 默认t, io, err := common.NewTracer("trade-order", common.ConsulIp+":6831")
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//	defer io.Close()
+	//	//设置全局的Tracing
+	//	opentracing.SetGlobalTracer(t)暴露9092
 	common.PrometheusBoot(9092)
+
+	//获取mysql-trade配置信息
+	consulConfig, err := common.GetConsulConfig(common.ConsulStr, common.TradeFileKey)
+	if err != nil {
+		log.Println("consulConfig err :", err)
+	}
+	//2.初始化db
+	db, _ := common.GetMysqlFromConsul(consulConfig)
 
 	// 1.consul注册中心（固定的）
 	consulReist := consul.NewRegistry(func(options *registry.Options) {
@@ -39,7 +47,7 @@ func main() {
 		micro.RegisterTTL(time.Second*30),
 		micro.RegisterInterval(time.Second*30),
 		micro.Name("trade-order"),
-		micro.Address(":8085"), //监听什么？
+		micro.Address(":8085"),
 		micro.Version("v1"),
 		//服务绑定（注册）
 		micro.Registry(consulReist),
@@ -50,14 +58,6 @@ func main() {
 		//添加监控
 		micro.WrapHandler(prometheus.NewHandlerWrapper()),
 	)
-
-	//获取mysql-trade配置信息
-	consulConfig, err := common.GetConsulConfig(common.ConsulStr, common.TradeFileKey)
-	if err != nil {
-		log.Println("consulConfig err :", err)
-	}
-	//2.初始化db
-	db, _ := common.GetMysqlFromConsul(consulConfig)
 
 	//3.创建服务实例
 	tradeService := service.NewTradeOrderService(repository.NewTradeRepository(db))

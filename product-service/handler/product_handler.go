@@ -50,7 +50,8 @@ func (u *ProductHandler) ShowProductDetail(ctx context.Context, req *proto.Produ
 	if err1 != nil {
 		fmt.Println("ShowProductDetail SwapToStruct err : ", err1)
 	}
-	resp.ProductDetail = append(resp.ProductDetail, productDetail)
+
+	resp.ProductDetail = productDetail
 	return nil
 }
 
@@ -94,7 +95,7 @@ func (u *ProductHandler) ShowDetailSku(ctx context.Context, req *proto.ProductDe
 	return nil
 }
 
-// 修改商品库存
+// 更新商品库存
 func (u *ProductHandler) UpdateSku(ctx context.Context, req *proto.UpdateSkuReq, resp *proto.UpdateSkuResp) error {
 	isSuccess, err := u.ProductDataService.UpdateSku(req)
 	if err != nil {

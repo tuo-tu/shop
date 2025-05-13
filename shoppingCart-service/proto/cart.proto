@@ -83,7 +83,7 @@ message FindCartReq {
 
 ////查询购物车响应
 message FindCartResp {
-      ShoppingCart shoppingCart  = 1;
+    ShoppingCart shoppingCart  = 1;
 }
 
 //查询购物车
@@ -144,7 +144,7 @@ message ProductDetailReq {
 }
 
 message ProductDetailResp{
-    repeated ProductDetail productDetail = 1;
+    ProductDetail productDetail = 1;
 }
 
 service ShowProductDetail {

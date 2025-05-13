@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	//链路追踪实例化，注意addr是jaeper的地址，端口号6831
+	// 链路追踪实例化，注意addr是jaeper的地址，端口号6831
 	t, io, err := common.NewTracer("shop-product", common.ConsulIp+":6831")
 	if err != nil {
 		log.Fatal(err)

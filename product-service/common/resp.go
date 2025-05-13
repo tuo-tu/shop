@@ -6,7 +6,6 @@ import (
 	"net/http"
 )
 
-// 通过json tag进行结构体赋值
 func SwapToStruct(req, target interface{}) (err error) {
 	dataByte, err := json.Marshal(req)
 	if err != nil {

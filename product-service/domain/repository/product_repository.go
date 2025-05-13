@@ -18,13 +18,13 @@ type IProductRepository interface {
 	CountNum() int64
 }
 
+type ProductRepository struct {
+	mysqlDB *gorm.DB
+}
+
 // 创建实例
 func NewProductRepository(db *gorm.DB) IProductRepository {
 	return &ProductRepository{mysqlDB: db}
-}
-
-type ProductRepository struct {
-	mysqlDB *gorm.DB
 }
 
 // 分页查询
@@ -45,6 +45,7 @@ func (u *ProductRepository) Page(length int32, pageIndex int32) (coun int64, pro
 }
 
 // 展示/获取商品详情
+// 注意这里并没有和proto的接口对应，按理说应该返回
 func (u *ProductRepository) ShowProductDetail(id int32) (product *model.ProductDetail, err error) {
 	//使用了GROUP_CONCAT怎么没有group by？可加可不加，不加默认表示按全部字段分组？
 	/*sql := "select p.`id`, p.`name`, p.product_type, p.category_id, p.starting_price, p.main_picture,\n" +
@@ -61,12 +62,12 @@ func (u *ProductRepository) ShowProductDetail(id int32) (product *model.ProductD
 		"left join product_picture pp on p.id = pp.product_id\n " +
 		"where p.id = ?\n" +
 		"group by p.id" //不能省略
-	var productDetails []model.ProductDetail
+	var productDetail model.ProductDetail
 	//Raw用于执行一条SQL查询语句，并从结果中获取指定ID的数据，并将结果扫描进productDetails结构体中
 	//这里其实只查出来一个数据，因为商品id是不重复的，因此最后返回&productDetails[0]
-	u.mysqlDB.Raw(sql, id).Scan(&productDetails)
-	fmt.Println("repository ShowProductDetail >>> ", productDetails)
-	return &productDetails[0], nil
+	u.mysqlDB.Raw(sql, id).Scan(&productDetail)
+	fmt.Println("repository ShowProductDetail >>> ", productDetail)
+	return &productDetail, nil
 }
 
 // 获取商品总数
@@ -76,16 +77,16 @@ func (u *ProductRepository) CountNum() int64 {
 	return count
 }
 
-// 展示某个商品的库存,参数id指的是商品id
-func (u *ProductRepository) ShowProductSku(id int32) (product *[]model.ProductSku, err error) {
+// 展示某个商品的库存,参数指的是productid
+func (u *ProductRepository) ShowProductSku(productid int32) (product *[]model.ProductSku, err error) {
 	sql := "select id, name, attribute_symbol_list, sell_price from product_sku where product_id = ?"
 	var productSku []model.ProductSku
-	u.mysqlDB.Raw(sql, id).Scan(&productSku)
+	u.mysqlDB.Raw(sql, productid).Scan(&productSku)
 	fmt.Println("repository ShowProductSku >>>>", productSku)
 	return &productSku, nil
 }
 
-// 展示某条库存商品详情，这里的参数id是指库存id号
+// 展示某条库存商品详情，这里的参数id是指库存id号，对应数据库中的商品is
 func (u *ProductRepository) ShowDetailSku(id int32) (obj *model.ProductSku, err error) {
 	var productSku = &model.ProductSku{}
 	u.mysqlDB.Where("id = ?", id).Find(productSku)
